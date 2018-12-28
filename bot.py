@@ -10,6 +10,7 @@ serverAndDate = {}
 botStartup = datetime.datetime.now()
 lastMention = {}
 awake = {}
+timesSaid = {}
 
 client = discord.Client()
 
@@ -24,12 +25,16 @@ def readTimesFromFile():
                 awake[tmp[0]] = bool(tmp[2])
             else:
                 awake[tmp[0]] = True
+            if (len(tmp) >= 4):
+                timesSaid[tmp[0]] = int(tmp[3])
+            else:
+                timesSaid[tmp[0]] = 0
             
 
 def writeTimesToFile():
     with open('timeStamps.txt', 'w') as target:
         for serverId in serverAndDate:
-            target.write('{},{},{}\n'.format(serverId, serverAndDate[serverId].strftime("%Y-%m-%d %H:%M:%S"), awake[serverId]))
+            target.write('{},{},{},{}\n'.format(serverId, serverAndDate[serverId].strftime("%Y-%m-%d %H:%M:%S"), awake[serverId]), timesSaid[serverId])
 
 @client.event
 async def on_ready():
@@ -59,6 +64,8 @@ async def on_message_edit(before, message):
         lastMention[serverId] = bot.joined_at
     if serverId not in awake:
         awake[serverId] = True
+    if serverId not in timesSaid:
+        timesSaid[serverId] = 0
 
     # Begin time formatting
     diff = currentTime - lastReferenced
@@ -94,19 +101,19 @@ async def on_message_edit(before, message):
     if (hasattr(message.author, 'server_permissions')):
         permission = message.author.server_permissions
         if message.content.startswith('!ttsilence') and permission.administrator:
-            await client.send_message(message.channel, "Ok {}, I'll be quiet now. use '!vtalert' to wake me back up!".format(message.author.mention))
+            await client.send_message(message.channel, "Ok {}, I'll be quiet now. use '!ttalert' to wake me back up!".format(message.author.mention))
             awake[serverId] = False
             writeTimesToFile()
         elif message.content.startswith('!ttalert') and permission.administrator:
             await client.send_message(message.channel, "Ok {}, I'm scanning now.".format(message.author.mention))
             awake[serverId] = True
             writeTimesToFile()
-    if message.content.startswith('!ttsilence') or message.content.startswith('!vtalert'):
+    if message.content.startswith('!ttsilence') or message.content.startswith('!ttalert'):
         pass
     elif message.content.startswith('!tthelp'):
-        await client.send_message(message.channel, "You can ask me how long we've made it with '!tt'.\n If you're an admin you can silence me with '!vtsilence' and wake me back up with '!vtalert'")
+        await client.send_message(message.channel, "You can ask me how long we've made it with '!tt'.\n If you're an admin you can silence me with '!vtsilence' and wake me back up with '!ttalert'")
     elif message.content.startswith('!tt'):
-        await client.send_message(message.channel, 'The server has gone {}{}{}{} without mentioning the forbidden word.'.format(dt, ht, mt, st))
+        await client.send_message(message.channel, 'The server has gone {}{}{}{} without mentioning the forbidden word. It has been mentioned {} times so far.'.format(dt, ht, mt, st, timesSaid[serverId]))
     if ((pattern.search(message.content) is not None) and (message.author.id != client.user.id)):
         serverAndDate[serverId] = currentTime
         writeTimesToFile()
@@ -114,6 +121,7 @@ async def on_message_edit(before, message):
         if (awake[serverId] and (currentTime - lastMention[serverId]).total_seconds() >= 1800):
             await client.send_message(message.channel, '{} referenced the forbidden word, setting the counter back to 0. I\'ll wait a half hour before warning you again.\n The server went {}{}{}{} without mentioning it.'.format(message.author.mention, dt, ht, mt, st))
             lastMention[serverId] = currentTime
+            timesSaid[serverId]++
 
 @client.event
 async def on_message(message):
@@ -136,6 +144,8 @@ async def on_message(message):
         lastMention[serverId] = bot.joined_at
     if serverId not in awake:
         awake[serverId] = True
+    if serverId not in timesSaid:
+        timesSaid[serverId] = 0
 
     # Begin time formatting
     diff = currentTime - lastReferenced
@@ -183,7 +193,7 @@ async def on_message(message):
     elif message.content.startswith('!tthelp'):
         await client.send_message(message.channel, "You can ask me how long we've made it with '!tt'.\n If you're an admin you can silence me with '!ttsilence' and wake me back up with '!ttalert'")
     elif message.content.startswith('!tt'):
-        await client.send_message(message.channel, 'The server has gone {}{}{}{} without mentioning the forbidden word.'.format(dt, ht, mt, st))
+        await client.send_message(message.channel, 'The server has gone {}{}{}{} without mentioning the forbidden word. It has been mentioned {} times so far.'.format(dt, ht, mt, st, timesSaid[serverId]))
     if ((pattern.search(message.content) is not None) and (message.author.id != client.user.id)):
         serverAndDate[serverId] = currentTime
         writeTimesToFile()
@@ -191,6 +201,7 @@ async def on_message(message):
         if (awake[serverId] and (currentTime - lastMention[serverId]).total_seconds() >= 1800):
             await client.send_message(message.channel, '{} referenced the forbidden word, setting the counter back to 0. I\'ll wait a half hour before warning you again.\n The server went {}{}{}{} without mentioning it.'.format(message.author.mention, dt, ht, mt, st))
             lastMention[serverId] = currentTime
+            timesSaid[serverId]++
 
 readTimesFromFile()
 print('Stored server info:')
