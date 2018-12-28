@@ -171,17 +171,17 @@ async def on_message(message):
     if (hasattr(message.author, 'server_permissions')):
         permission = message.author.server_permissions
         if message.content.startswith('!ttsilence') and permission.administrator:
-            await client.send_message(message.channel, "Ok {}, I'll be quiet now. use '!vtalert' to wake me back up!".format(message.author.mention))
+            await client.send_message(message.channel, "Ok {}, I'll be quiet now. use '!ttalert' to wake me back up!".format(message.author.mention))
             awake[serverId] = False
             writeTimesToFile()
         elif message.content.startswith('!ttalert') and permission.administrator:
             await client.send_message(message.channel, "Ok {}, I'm scanning now.".format(message.author.mention))
             awake[serverId] = True
             writeTimesToFile()
-    if message.content.startswith('!ttsilence') or message.content.startswith('!vtalert'):
+    if message.content.startswith('!ttsilence') or message.content.startswith('!ttalert'):
         pass
     elif message.content.startswith('!tthelp'):
-        await client.send_message(message.channel, "You can ask me how long we've made it with '!vt'.\n If you're an admin you can silence me with '!vtsilence' and wake me back up with '!vtalert'")
+        await client.send_message(message.channel, "You can ask me how long we've made it with '!tt'.\n If you're an admin you can silence me with '!ttsilence' and wake me back up with '!ttalert'")
     elif message.content.startswith('!tt'):
         await client.send_message(message.channel, 'The server has gone {}{}{}{} without mentioning the forbidden word.'.format(dt, ht, mt, st))
     if ((pattern.search(message.content) is not None) and (message.author.id != client.user.id)):
