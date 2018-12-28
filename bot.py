@@ -112,7 +112,7 @@ async def on_message_edit(before, message):
         writeTimesToFile()
         print ("{}::: {} lasted {} seconds.".format(currentTime, serverId, (currentTime - lastMention[serverId]).total_seconds()))
         if (awake[serverId] and (currentTime - lastMention[serverId]).total_seconds() >= 1800):
-            await client.send_message(message.channel, '{} referenced the forbidden word, setting the counter back to 0. I\'ll wait a half hour before warning you again.\n The server went {}{}{}{} without mentioning it.'.format(message.author.mention, dt, ht, mt, st))
+            await client.send_message(message.channel, '**We\'re back on our bullshit!** {} said the forbidden word, setting the counter back to 0. I\'ll wait a half hour before warning you again.\n The server went {}{}{}{} without mentioning it.'.format(message.author.mention, dt, ht, mt, st))
             lastMention[serverId] = currentTime
 
 @client.event
@@ -189,7 +189,7 @@ async def on_message(message):
         writeTimesToFile()
         print ("{}::: {} lasted {} seconds.".format(currentTime, serverId, (currentTime - lastMention[serverId]).total_seconds()))
         if (awake[serverId] and (currentTime - lastMention[serverId]).total_seconds() >= 1800):
-            await client.send_message(message.channel, '{} referenced the forbidden word, setting the counter back to 0. I\'ll wait a half hour before warning you again.\n The server went {}{}{}{} without mentioning it.'.format(message.author.mention, dt, ht, mt, st))
+            await client.send_message(message.channel, '**We\'re back on our bullshit!** {} said the forbidden word, setting the counter back to 0. I\'ll wait a half hour before warning you again.\n The server went {}{}{}{} without mentioning it.'.format(message.author.mention, dt, ht, mt, st))
             lastMention[serverId] = currentTime
 
 readTimesFromFile()
