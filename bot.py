@@ -121,7 +121,7 @@ async def on_message_edit(before, message):
         if (awake[serverId] and (currentTime - lastMention[serverId]).total_seconds() >= 1800):
             await client.send_message(message.channel, '{} referenced the forbidden word, setting the counter back to 0. I\'ll wait a half hour before warning you again.\n The server went {}{}{}{} without mentioning it.'.format(message.author.mention, dt, ht, mt, st))
             lastMention[serverId] = currentTime
-            timesSaid[serverId]++
+            timesSaid[serverId]=timesSaid[serverId]+1
 
 @client.event
 async def on_message(message):
@@ -201,7 +201,7 @@ async def on_message(message):
         if (awake[serverId] and (currentTime - lastMention[serverId]).total_seconds() >= 1800):
             await client.send_message(message.channel, '{} referenced the forbidden word, setting the counter back to 0. I\'ll wait a half hour before warning you again.\n The server went {}{}{}{} without mentioning it.'.format(message.author.mention, dt, ht, mt, st))
             lastMention[serverId] = currentTime
-            timesSaid[serverId]++
+            timesSaid[serverId]=timesSaid[serverId]+1
 
 readTimesFromFile()
 print('Stored server info:')
