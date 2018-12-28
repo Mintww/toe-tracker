@@ -4,7 +4,7 @@ import re
 import datetime
 import math
 
-# A pattern to match the word vore, and only the single word vore.
+# A pattern to match the word toe, even as part of another word (for example: toego, toes, yamatoe).
 pattern = re.compile(r'[T|t][\*|_|~|`|-|\.]*[O|Ò|Ó|Ô|Õ|Ö|o|ò|ó|ô|õ|ö|ᴑ|о][\*|_|~|`|-|\.]*[E|È|É|Ê|Ë|e|è|é|ê|ë]')
 serverAndDate = {}
 botStartup = datetime.datetime.now()
